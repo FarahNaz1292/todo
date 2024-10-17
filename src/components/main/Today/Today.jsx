@@ -1,29 +1,38 @@
+// import moment from "moment";
+// import Schedule from "../../shared/Schedule";
+import { useContext, useEffect, useState } from "react";
+import { scheduleContext } from "../../../Provider/ScheduleProvider";
 import moment from "moment";
 import Schedule from "../../shared/Schedule";
-import { useState, useEffect } from "react";
 
-const Today = ({ schedule }) => {
-  const [todaySchedule, setTodaySchedule] = useState([]);
-  const date = new Date();
-  const todayDate = moment(date).format("DD/MM/YYYY");
+
+const Today = () => {
+  const { schedule, setSchedule, token } = useContext(scheduleContext);
+  const [todaysSchedules, setTodaysSchedules] = useState([])
+
+  const todayDate = moment().format('DD/MM/YYYY')
 
   useEffect(() => {
-    setTodaySchedule(
-      schedule.filter(
-        (schedul) => moment(schedul.date).format("DD/MM/YYYY") === todayDate
-      )
-      // schedule
-    );
-  }, [schedule]);
-  console.log(todaySchedule);
+    if (schedule) {
+      setTodaysSchedules(
+        schedule?.filter(
+          (schedul) => moment(schedul.date).format("DD/MM/YYYY") === todayDate
+        )
+      );
+    }
+  }, [schedule, todayDate]);
+
+  console.log('today', schedule)
+
+  console.log(todaysSchedules);
 
   return (
     <>
       <div>
         <div>
           <h3>Today's Schedule</h3>
-          {todaySchedule?.length > 0 &&
-            todaySchedule.map((schedule) => (
+          {todaysSchedules?.length > 0 &&
+            todaysSchedules.map((schedule) => (
               <Schedule {...schedule} key={schedule.id} />
             ))}
         </div>

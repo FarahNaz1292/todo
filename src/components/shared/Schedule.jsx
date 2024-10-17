@@ -2,10 +2,10 @@ import { useContext } from "react";
 import { AiFillDelete, AiOutlineFieldTime } from "react-icons/ai";
 import { FcEditImage } from "react-icons/fc";
 import { MdDateRange, MdRadioButtonUnchecked } from "react-icons/md";
-import { scheduleContext } from "../../App";
+import { scheduleContext } from "../../Provider/ScheduleProvider";
 
 const Schedule = ({ id, name, date, time, checked }) => {
-  const [schedule, setSchedule] = useContext(scheduleContext);
+  const { schedule, setSchedule, updateScheduleState } = useContext(scheduleContext);
   const handleCheck = (id) => {
     setSchedule(
       schedule.map((schedule) => {
@@ -20,6 +20,15 @@ const Schedule = ({ id, name, date, time, checked }) => {
       }
     };
   };
+
+  const handleDelete = () => {
+    const filteredSchedule = schedule.filter(s => s.id !== id)
+    // console.log(filteredSchedule)
+    // localStorage.setItem('todos', JSON.stringify(filteredSchedule))
+    // setSchedule(filteredSchedule)
+    updateScheduleState(filteredSchedule)
+  }
+
   return (
     <>
       <div>
@@ -43,7 +52,7 @@ const Schedule = ({ id, name, date, time, checked }) => {
           <MdRadioButtonUnchecked></MdRadioButtonUnchecked>
         </button>
         <button
-          onClick={() => handleDelete(schedule.id)}
+          onClick={handleDelete}
           data-toggle="tooltip"
           data-placement="top"
           title="Delete"

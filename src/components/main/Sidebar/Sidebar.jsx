@@ -15,13 +15,14 @@ import moment from "moment/moment";
 import Today from "../Today/Today";
 import AllSchedule from "../AllSchedule/AllSchedule";
 import Status from "../Status/Status";
-import { scheduleContext } from "../../../App";
+
 import toast from "react-hot-toast";
 import Weeks from "../Weeks/Weeks";
-import { Link } from "react-router-dom";
+import { json, Link } from "react-router-dom";
+import { scheduleContext } from "../../../Provider/ScheduleProvider";
 
 const Sidebar = () => {
-  const [schedule, setSchedule] = useContext(scheduleContext);
+  const { schedule, setSchedule } = useContext(scheduleContext);
   const [showModal, setShowModal] = useState(false);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState("00:00");
@@ -33,16 +34,15 @@ const Sidebar = () => {
     // console.log("clicked");
     if (name && time) {
       setError("");
-      setSchedule([
-        ...schedule,
-        {
-          id: Math.ceil(Math.random() * 100),
-          name: name,
-          time: moment(time).format("h:mm a"),
-          date: moment(date).format("MM/DD/YYYY"),
-          checked: false,
-        },
-      ]);
+      const payload = [...schedule, {
+        id: Math.ceil(Math.random() * 1000000),
+        name: name,
+        time: moment(time).format("h:mm a"),
+        date: moment(date).format("MM/DD/YYYY"),
+        checked: false,
+      }]
+      setSchedule(payload);
+      localStorage.setItem('todos', JSON.stringify(payload))
       setTime("");
       setDate("");
       setShowModal(false);
@@ -68,28 +68,27 @@ const Sidebar = () => {
         </div>
         <div>
           <div className="schedule-List d-flex flex-column text-center m-3">
-            <a
-              className="schedule-list-items "
-              onClick={(e) => {
-                e.preventDefault();
-                setShowUI("today");
-              }}
+            <Link to={'/today'} className="schedule-list-items "
+            // onClick={(e) => {
+            //   e.preventDefault();
+            //   setShowUI("today");
+            // }}
             >
               {" "}
               <MdOutlineToday />
               Today
-            </a>
-            <a
+            </Link>
+            <Link to={'/week'}
               className="todo-list-items p-4 m-3"
-              onClick={(e) => {
-                e.preventDefault;
-                setShowUI("week");
-              }}
+            // onClick={(e) => {
+            //   e.preventDefault;
+            //   setShowUI("week");
+            // }}
             >
               {" "}
               <CgCalendarNext />
               Week
-            </a>
+            </Link>
             <a
               className="todo-list-items p-4 m-3"
               onClick={(e) => {
@@ -113,13 +112,13 @@ const Sidebar = () => {
               Status
             </a>
           </div>
-          <div>
-            {/* {showUI === "today" && <Today schedule={schedule} />} */}
+          {/* <div>
+            {showUI === "today" && <Today schedule={schedule} />}
             <Link to="/today">Today</Link>
             {showUI === "week" && <Weeks schedule={schedule} />}
             {showUI === "all" && <AllSchedule schedule={schedule} />}
             {showUI === "status" && <Status></Status>}
-          </div>
+          </div> */}
         </div>
         {showModal && (
           <ModalComponent showModal={showModal} setShowModal={setShowModal}>
